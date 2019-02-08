@@ -1,10 +1,13 @@
 import xmltodict
+import requests
 
 output = {}
 bugCount = 0
 low = 0
 med = 0
 high = 0
+
+endpoint = ""
 
 with open('dependency-check-report.xml') as fd:
     owasp_doc = xmltodict.parse(fd.read())
@@ -32,5 +35,6 @@ output['spotbugs_low'] = low
 output['spotbugs_med'] = med
 output['spotbugs_high'] = high
 
+r = requests.post(endpoint, data = output)
 print(output)
 
