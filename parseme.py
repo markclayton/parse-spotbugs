@@ -1,5 +1,7 @@
 import xmltodict
 import requests
+# import logging 
+# import graypy
 
 output = {}
 bugCount = 0
@@ -7,7 +9,9 @@ low = 0
 med = 0
 high = 0
 
-endpoint = ""
+api_endpoint = "http://0.0.0.0:8000/"
+graylog_endpoint = "X.X.X.X"
+headers = {'content-type': 'application/json'}
 
 with open('dependency-check-report.xml') as fd:
     owasp_doc = xmltodict.parse(fd.read())
@@ -41,6 +45,14 @@ output['spotbugs_low'] = low
 output['spotbugs_med'] = med
 output['spotbugs_high'] = high
 
-# r = requests.post(endpoint, data = output)
-print(output)
+# for GrayLog digestion 
+# log = logging.getLogger(output)
+# log.setLevel(logging.DEBUG)
+# handle = graypy.GELFHandler(graylog_endpoint,'12201')
+# log.addHandler(handle)
+# log.debug(output)
+
+r = requests.post(api_endpoint, json=output, verify=False, headers=headers)
+print(r)
+# print(output)
 
