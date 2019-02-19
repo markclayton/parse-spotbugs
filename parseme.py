@@ -1,7 +1,8 @@
 import xmltodict
 import requests
-# import logging 
-# import graypy
+import logging 
+import graypy
+import json 
 
 output = {}
 bugCount = 0
@@ -9,22 +10,20 @@ low = 0
 med = 0
 high = 0
 
-api_endpoint = "http://0.0.0.0:8000/"
-graylog_endpoint = "X.X.X.X"
+api_endpoint = "http://0.0.0.0:5000/api/v1/fsb/"
+graylog_endpoint = "192.168.0.20"
 headers = {'content-type': 'application/json'}
 
 with open('dependency-check-report.xml') as fd:
     owasp_doc = xmltodict.parse(fd.read())
 
 output['jenkins_name'] = str(owasp_doc['analysis']['projectInfo']['name'])
-output['dependency_vuln_count'] = "TODO"
+#output['dependency_vuln_count'] = "TODO"
 
 with open('target/spotbugsXml.xml') as fd2:
     spotbugs_doc = xmltodict.parse(fd2.read())
 
-output['project_name'] = str(spotbugs_doc['BugCollection']['Project']['@projectName'])
-
-# https://spotbugs.readthedocs.io/en/stable/filter.html
+output['project_name'] = str(spotbugs_doc['BugCollection']['Project']['@projectName']) # https://spotbugs.readthedocs.io/en/stable/filter.html
 # <Rank>
 # This element matches warnings with a particular bug rank. 
 # The value attribute should be an integer value between 1 and 20, 
@@ -45,14 +44,5 @@ output['spotbugs_low'] = low
 output['spotbugs_med'] = med
 output['spotbugs_high'] = high
 
-# for GrayLog digestion 
-# log = logging.getLogger(output)
-# log.setLevel(logging.DEBUG)
-# handle = graypy.GELFHandler(graylog_endpoint,'12201')
-# log.addHandler(handle)
-# log.debug(output)
-
 r = requests.post(api_endpoint, json=output, verify=False, headers=headers)
-print(r)
-# print(output)
-
+print(r.status_code)
