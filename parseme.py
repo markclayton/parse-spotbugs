@@ -44,5 +44,7 @@ output['spotbugs_low'] = low
 output['spotbugs_med'] = med
 output['spotbugs_high'] = high
 
+output['bug_collection'] = spotbugs_doc['BugCollection']
+
 r = requests.post(api_endpoint, json=output, verify=False, headers=headers)
-print(r.status_code)
+print(r.text)
